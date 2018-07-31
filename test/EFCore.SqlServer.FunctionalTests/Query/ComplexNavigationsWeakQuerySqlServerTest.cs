@@ -16,6 +16,17 @@ namespace Microsoft.EntityFrameworkCore.Query
             //Fixture.TestSqlLoggerFactory.SetTestOutputHelper(testOutputHelper);
         }
 
+        public override Task Include_with_optional_navigation(bool isAsync)
+        {
+            return base.Include_with_optional_navigation(isAsync);
+        }
+
+
+        public override Task Include_collection_with_multiple_orderbys_member(bool isAsync)
+        {
+            return base.Include_collection_with_multiple_orderbys_member(isAsync);
+        }
+
         public override async Task Simple_owned_level1(bool isAsync)
         {
             await base.Simple_owned_level1(isAsync);
@@ -24,6 +35,15 @@ namespace Microsoft.EntityFrameworkCore.Query
                 @"SELECT [l1].[Id], [l1].[Date], [l1].[Name], [l1].[Id], [l1].[OneToOne_Required_PK_Date], [l1].[Level1_Optional_Id], [l1].[Level1_Required_Id], [l1].[Level2_Name], [l1].[OneToMany_Optional_Inverse2Id], [l1].[OneToMany_Required_Inverse2Id], [l1].[OneToOne_Optional_PK_Inverse2Id]
 FROM [Level1] AS [l1]");
         }
+
+
+
+        public override Task SelectMany_with_Include_and_order_by(bool isAsync)
+        {
+            return base.SelectMany_with_Include_and_order_by(isAsync);
+        }
+
+
 
         public override async Task Simple_owned_level1_convention(bool isAsync)
         {

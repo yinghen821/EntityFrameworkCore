@@ -1157,6 +1157,14 @@ FROM [Gears] AS [g]
 WHERE [g].[Discriminator] IN (N'Officer', N'Gear')");
         }
 
+        public override async Task Select_null_propagation_negative_conditional_with_coalesce(bool isAsync)
+        {
+            await base.Select_null_propagation_negative_conditional_with_coalesce(isAsync);
+
+            AssertSql(
+                @"");
+        }
+
         public override async Task Select_null_propagation_negative2(bool isAsync)
         {
             await base.Select_null_propagation_negative2(isAsync);

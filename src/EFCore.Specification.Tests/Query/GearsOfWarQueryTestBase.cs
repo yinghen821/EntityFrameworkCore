@@ -1142,6 +1142,15 @@ namespace Microsoft.EntityFrameworkCore.Query
                 gs => gs.Select(g => g.LeaderNickname != null ? (bool?)(g.Nickname.Length == 5) : (bool?)null));
         }
 
+        [ConditionalTheory(Skip = "issue #12958")]
+        [MemberData(nameof(IsAsyncData))]
+        public virtual Task Select_null_propagation_negative_conditional_with_coalesce(bool isAsync)
+        {
+            return AssertQueryScalar<Gear>(
+                isAsync,
+                gs => gs.Select(g => g.LeaderNickname != null ? (bool?)(g.Nickname.Length == 5) ?? default(bool) : (bool?)null));
+        }
+
         [ConditionalTheory]
         [MemberData(nameof(IsAsyncData))]
         public virtual Task Select_null_propagation_negative2(bool isAsync)
