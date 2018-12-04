@@ -312,18 +312,6 @@ namespace Microsoft.EntityFrameworkCore
             public string Name { get; set; }
         }
 
-        protected override IModelValidator CreateModelValidator()
-            => new SqlServerModelValidator(
-                new ModelValidatorDependencies(ValidationLogger, ModelLogger),
-                new RelationalModelValidatorDependencies(
-#pragma warning disable 618
-                    TestServiceFactory.Instance.Create<ObsoleteRelationalTypeMapper>(),
-#pragma warning restore 618
-                    new SqlServerTypeMappingSource(
-                        TestServiceFactory.Instance.Create<TypeMappingSourceDependencies>(),
-                        TestServiceFactory.Instance.Create<RelationalTypeMappingSourceDependencies>())));
-
-        protected override ModelBuilder CreateConventionalModelBuilder()
-            => SqlServerTestHelpers.Instance.CreateConventionBuilder();
+        protected override TestHelpers TestHelpers => SqlServerTestHelpers.Instance;
     }
 }

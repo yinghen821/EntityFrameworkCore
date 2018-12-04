@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Microsoft.EntityFrameworkCore.TestUtilities;
 using Microsoft.Extensions.Logging;
 using Xunit;
@@ -162,7 +161,7 @@ namespace Microsoft.EntityFrameworkCore
         [Fact]
         public virtual void Detects_incompatible_primary_key_columns_with_shared_table()
         {
-            var modelBuilder = InMemoryTestHelpers.Instance.CreateConventionBuilder();
+            var modelBuilder = CreateConventionalModelBuilder();
 
             modelBuilder.Entity<A>().HasOne<B>().WithOne().IsRequired().HasForeignKey<A>(a => a.Id).HasPrincipalKey<B>(b => b.Id);
             modelBuilder.Entity<A>().Property(a => a.Id).HasColumnName("Key");
@@ -1061,12 +1060,11 @@ namespace Microsoft.EntityFrameworkCore
                         TestServiceFactory.Instance.Create<RelationalTypeMappingSourceDependencies>())
                     .FindMapping(property);
 
-        protected override void SetBaseType(EntityType entityType, EntityType baseEntityType)
+        protected override void SetBaseType(IMutableEntityType entityType, IMutableEntityType baseEntityType)
         {
             base.SetBaseType(entityType, baseEntityType);
 
-            var discriminatorProperty = baseEntityType.GetOrAddProperty("Discriminator", typeof(string));
-            baseEntityType.Relational().DiscriminatorProperty = discriminatorProperty;
+            baseEntityType.Relational().DiscriminatorProperty = baseEntityType.GetOrAddProperty("Discriminator", typeof(string));
             baseEntityType.Relational().DiscriminatorValue = baseEntityType.Name;
             entityType.Relational().DiscriminatorValue = entityType.Name;
         }
@@ -1110,18 +1108,6 @@ namespace Microsoft.EntityFrameworkCore
         {
         }
 
-        protected override IModelValidator CreateModelValidator()
-            => new RelationalModelValidator(
-                new ModelValidatorDependencies(ValidationLogger, ModelLogger),
-                new RelationalModelValidatorDependencies(
-#pragma warning disable 618
-                    new ObsoleteRelationalTypeMapper(),
-#pragma warning restore 618
-                    new TestRelationalTypeMappingSource(
-                        TestServiceFactory.Instance.Create<TypeMappingSourceDependencies>(),
-                        TestServiceFactory.Instance.Create<RelationalTypeMappingSourceDependencies>())));
-
-        protected override ModelBuilder CreateConventionalModelBuilder()
-            => RelationalTestHelpers.Instance.CreateConventionBuilder();
+        protected override TestHelpers TestHelpers => RelationalTestHelpers.Instance;
     }
 }

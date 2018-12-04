@@ -88,16 +88,6 @@ namespace Microsoft.EntityFrameworkCore
                 = TestServiceFactory.Instance.Create<SqliteTypeMappingSource>()
                     .FindMapping(property);
 
-        protected override IModelValidator CreateModelValidator()
-            => new SqliteModelValidator(
-                new ModelValidatorDependencies(ValidationLogger, ModelLogger),
-                new RelationalModelValidatorDependencies(
-#pragma warning disable 618
-                    new ObsoleteRelationalTypeMapper(),
-#pragma warning restore 618
-                    TestServiceFactory.Instance.Create<SqliteTypeMappingSource>()));
-
-        protected override ModelBuilder CreateConventionalModelBuilder()
-            => SqliteTestHelpers.Instance.CreateConventionBuilder();
+        protected override TestHelpers TestHelpers => SqliteTestHelpers.Instance;
     }
 }
